@@ -6,7 +6,8 @@ How to start server
  - pip install django
  - pip install djangorestframework
  - pip install psycopg2
- 
+ - pip install django-rest-swagger
+
 4 Create database in postgres named pai:
  - CREATE DATABASE pai; 
 5 Then:
