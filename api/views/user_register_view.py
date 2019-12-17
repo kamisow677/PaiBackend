@@ -12,7 +12,6 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class LocationUserRegister(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
     serializer_class = UserProfileSerializer
 
     def post(self, request, format=None):

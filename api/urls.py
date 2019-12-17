@@ -9,19 +9,6 @@ from api.views.user_view import LoginView, LogoutView
 from api.views.location_user_view import LocationUserList, LocationUserDetailList
 from api.views.user_register_view import LocationUserRegister
 
-# urlpatterns = [
-#     url(
-#         r'^api/v1/locations/(?P<pk>[0-9]+)$',
-#         views.get_delete_update_locations,
-#         name='get_delete_update_locations'
-#     ),
-#     url(
-#         r'^api/v1/locations/$',
-#         views.get_post_locations,
-#         name='get_post_locations'
-#     )
-# ]
-
 from rest_framework.schemas import get_schema_view
 from rest_framework_swagger.renderers import SwaggerUIRenderer, OpenAPIRenderer
 
@@ -34,6 +21,5 @@ urlpatterns = [
     path('user/locations/<int:pk>/', LocationUserDetailList.as_view(), name="user_locations_zpk"),
     path('user/register', LocationUserRegister.as_view(), name="register"),
     path('login/', LoginView.as_view(), name="login"),
-    path('pla/', schema_view, name="docs"),
     path('logout/', LogoutView.as_view(), name="logout"),
 ]

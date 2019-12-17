@@ -10,4 +10,4 @@ class Location(models.Model):
 
 
     def __repr__(self):
-        return 'postision X: ' + self.position_x + 'postision Y: ' + self.position_y + ' description: ' + self.description
+        return 'postision X: ' + str(self.position_x) + 'postision Y: ' + str(self.position_y) + ' description: ' + self.description
