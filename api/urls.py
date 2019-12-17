@@ -9,20 +9,6 @@ from api.views.location_view import LocationList, LocationDetail
 from api.views.user_register_view import LocationUserRegister
 from api.views.user_view import LoginView, LogoutView
 
-# urlpatterns = [
-#     url(
-#         r'^api/v1/locations/(?P<pk>[0-9]+)$',
-#         views.get_delete_update_locations,
-#         name='get_delete_update_locations'
-#     ),
-#     url(
-#         r'^api/v1/locations/$',
-#         views.get_post_locations,
-#         name='get_post_locations'
-#     )
-# ]
-
-
 schema_view = get_schema_view(
     openapi.Info(
         title="PAI Backend API",

@@ -14,10 +14,6 @@ class LocationUserList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
     def get_queryset(self):
-        """
-        This view should return a list of all the locations
-        for the currently authenticated user.
-        """
         user = self.request.user
         queryset =  Location.objects.filter(user=user)
 
