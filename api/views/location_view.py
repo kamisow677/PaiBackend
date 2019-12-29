@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 
+
 class LocationList(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -23,11 +24,12 @@ class LocationList(APIView):
         serializer = LocationSerializer(data=request.data)
 
         if serializer.is_valid():
-            user = Location.objects.create(position_x=serializer.data['position_x'], position_y=serializer.data['position_y']
-                                           , description=serializer.data['description'],  user=request.user)
+            user = Location.objects.create(position_x=serializer.data['position_x'],
+                                           position_y=serializer.data['position_y'],
+                                           description=serializer.data['description'],
+                                           user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class LocationDetail(APIView):
@@ -56,7 +58,6 @@ class LocationDetail(APIView):
         location = self.get_object(pk)
         location.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 # @api_view(['GET', 'DELETE', 'PUT'])
 # def get_delete_update_locations(request, pk):

@@ -8,9 +8,10 @@ from django.urls import reverse
 from ..models import Location
 from ..serializers import LocationSerializer
 
-
 # initialize the APIClient app
 client = Client()
+
+
 # User.objects.create_user(username='user', password='password')
 # client.login(username='user', password='password')
 
@@ -37,20 +38,18 @@ class GetAllLocationsTest(TestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+
 class GetSingleLocationTest(TestCase):
     """ Test module for GET single puppy API """
 
     def setUp(self):
         self.user = User.objects.create_user(username='user', password='password')
-        self.loc1 = Location.objects.create(
-            position_x=1, position_y=3)
-        self.loc2 = Location.objects.create(
-            position_x=2, position_y=4)
+        self.loc1 = Location.objects.create(position_x=1, position_y=3)
+        self.loc2 = Location.objects.create(position_x=2, position_y=4)
 
     def test_get_valid_single_location(self):
         self.client.login(username='user', password='password')
-        response = self.client.get(
-            reverse('locations_zpk', kwargs={'pk': self.loc1.pk}))
+        response = self.client.get(reverse('locations_zpk', kwargs={'pk': self.loc1.pk}))
         puppy = Location.objects.get(pk=self.loc1.pk)
         serializer = LocationSerializer(puppy)
         self.assertEqual(response.data, serializer.data)
@@ -58,9 +57,9 @@ class GetSingleLocationTest(TestCase):
 
     def test_get_invalid_single_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.get(
-            reverse('locations_zpk', kwargs={'pk': 30}))
+        response = self.client.get(reverse('locations_zpk', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class CreateNewLocationTest(TestCase):
     """ Test module for inserting a new puppy """
@@ -78,7 +77,7 @@ class CreateNewLocationTest(TestCase):
 
     def test_create_valid_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.post(
+        response = self.client.post(
             reverse('locations_bezpk'),
             data=json.dumps(self.valid_payload),
             content_type='application/json'
@@ -87,22 +86,21 @@ class CreateNewLocationTest(TestCase):
 
     def test_create_invalid_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.post(
+        response = self.client.post(
             reverse('locations_bezpk'),
             data=json.dumps(self.invalid_payload),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+
 class UpdateSingleLocationTest(TestCase):
     """ Test module for updating an existing puppy record """
 
     def setUp(self):
         self.user = User.objects.create_user(username='user', password='password')
-        self.loc1 = Location.objects.create(
-            position_x=1, position_y=3)
-        self.loc2 = Location.objects.create(
-            position_x=2, position_y=4)
+        self.loc1 = Location.objects.create(position_x=1, position_y=3)
+        self.loc2 = Location.objects.create(position_x=2, position_y=4)
         self.valid_payload = {
             'position_x': 1,
             'position_y': 5
@@ -113,7 +111,7 @@ class UpdateSingleLocationTest(TestCase):
 
     def test_valid_update_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.put(
+        response = self.client.put(
             reverse('locations_zpk', kwargs={'pk': self.loc2.pk}),
             data=json.dumps(self.valid_payload),
             content_type='application/json'
@@ -122,30 +120,28 @@ class UpdateSingleLocationTest(TestCase):
 
     def test_invalid_update_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.put(
+        response = self.client.put(
             reverse('locations_zpk', kwargs={'pk': self.loc2.pk}),
             data=json.dumps(self.invalid_payload),
-            content_type='application/json')
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class DeleteSingleLocationTest(TestCase):
     """ Test module for deleting an existing puppy record """
 
     def setUp(self):
         self.user = User.objects.create_user(username='user', password='password')
-        self.loc1 = Location.objects.create(
-            position_x=1, position_y=3)
-        self.loc2 = Location.objects.create(
-            position_x=2, position_y=4)
+        self.loc1 = Location.objects.create(position_x=1, position_y=3)
+        self.loc2 = Location.objects.create(position_x=2, position_y=4)
 
     def test_valid_delete_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.delete(
-            reverse('locations_zpk', kwargs={'pk': self.loc2.pk}))
+        response = self.client.delete(reverse('locations_zpk', kwargs={'pk': self.loc2.pk}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_invalid_delete_location(self):
         self.client.login(username='user', password='password')
-        response =  self.client.delete(
-            reverse('locations_zpk', kwargs={'pk': 30}))
+        response = self.client.delete(reverse('locations_zpk', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
