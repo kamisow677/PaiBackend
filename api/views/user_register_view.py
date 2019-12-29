@@ -16,11 +16,11 @@ class LocationUserRegister(generics.GenericAPIView):
 
     def post(self, request, format=None):
         serializer = UserProfileSerializer(data=request.data)
-        data = request.data;
+        data = request.data
         if serializer.is_valid():
             user = User.objects.create_user(data['username'], data['email'], data['password'])
-            user.last_name = data['last_name'];
-            user.first_name = data['first_name'];
+            user.last_name = data['last_name']
+            user.first_name = data['first_name']
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)

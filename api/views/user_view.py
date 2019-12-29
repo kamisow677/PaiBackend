@@ -11,6 +11,7 @@ from rest_framework import authentication
 from rest_framework import exceptions
 from ..serializers import UserProfileSerializer
 
+
 class LoginView(APIView):
     def post(self, request, format=None):
         data = request.data
@@ -31,15 +32,16 @@ class LoginView(APIView):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        user = User.objects.get(username=request.user.username);
-        print(user.password);
-        authenticate(username=user.username, password=user.password);
+        user = User.objects.get(username=request.user.username)
+        print(user.password)
+        authenticate(username=user.username, password=user.password)
 
-        print(request.user.is_active);
+        print(request.user.is_active)
         if request.user is not None:
             if request.user.is_active:
                 logout(request)

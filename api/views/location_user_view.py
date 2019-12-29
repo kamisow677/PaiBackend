@@ -13,9 +13,10 @@ from rest_framework.permissions import IsAuthenticated
 class LocationUserList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
+
     def get_queryset(self):
         user = self.request.user
-        queryset =  Location.objects.filter(user=user)
+        queryset = Location.objects.filter(user=user)
 
         position_x = self.request.query_params.get('position_x', None)
         if position_x is not None:
@@ -32,10 +33,13 @@ class LocationUserList(generics.ListAPIView):
     def post(self, request, format=None):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
-            user = Location.objects.create(position_x=serializer.data['position_x'], position_y=serializer.data['position_y']
-                                           , description=serializer.data['description'], user=request.user)
+            user = Location.objects.create(position_x=serializer.data['position_x'],
+                                           position_y=serializer.data['position_y'],
+                                           description=serializer.data['description'],
+                                           user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class LocationUserDetailList(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]

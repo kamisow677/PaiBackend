@@ -20,7 +20,6 @@ from django.contrib import admin
 from rest_framework import permissions
 from rest_framework.schemas import get_schema_view, openapi
 
-
 urlpatterns = [
     url(r'^', include('api.urls')),
     url(

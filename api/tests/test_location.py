@@ -1,6 +1,7 @@
 from django.test import TestCase
 from ..models import Location
 
+
 class LocationTest(TestCase):
     """ Test module for Puppy model """
 
@@ -11,10 +12,7 @@ class LocationTest(TestCase):
             position_x=2, position_y=4)
 
     def test_location(self):
-        loca1 = Location.objects.get(position_x=1)
-        loca2 = Location.objects.get(position_x=2)
-        self.assertEqual(
-            loca1.position_x , 1)
-        self.assertEqual(
-            loca2.position_x, 2)
-
+        loc1 = Location.objects.get(position_x=1)
+        loc2 = Location.objects.get(position_x=2)
+        self.assertEqual(loc1.position_x, 1)
+        self.assertEqual(loc2.position_x, 2)
