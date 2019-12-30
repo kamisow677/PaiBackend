@@ -23,6 +23,13 @@ class LocationList(APIView):
     def post(self, request, format=None):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
+            Location.objects.create(
+                title=serializer.data['title'],
+                longitude=serializer.data['longitude'],
+                latitude=serializer.data['latitude'],
+                description=serializer.data['description'],
+                user=request.user
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
