@@ -7,12 +7,12 @@ class LocationTest(TestCase):
 
     def setUp(self):
         Location.objects.create(
-            position_x=1, position_y=3)
+            longitude=1, latitude=3)
         Location.objects.create(
-            position_x=2, position_y=4)
+            longitude=2, latitude=4)
 
     def test_location(self):
-        loc1 = Location.objects.get(position_x=1)
-        loc2 = Location.objects.get(position_x=2)
-        self.assertEqual(loc1.position_x, 1)
-        self.assertEqual(loc2.position_x, 2)
+        loc1 = Location.objects.get(longitude=1)
+        loc2 = Location.objects.get(longitude=2)
+        self.assertEqual(loc1.longitude, 1)
+        self.assertEqual(loc2.longitude, 2)
