@@ -36,6 +36,11 @@ class LocationUserList(generics.ListAPIView):
     def post(self, request, format=None):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
+            Location.objects.create(longitude=serializer.data['longitude'],
+                                           title=serializer.data['title'],
+                                           latitude=serializer.data['latitude'],
+                                           description=serializer.data['description'],
+                                           user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
