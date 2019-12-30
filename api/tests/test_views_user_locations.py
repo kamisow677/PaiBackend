@@ -19,8 +19,8 @@ class GetAllLocationsUserTest(TestCase):
         self.user = User.objects.create_user(username='user1', password='password')
         self.client.login(username='user1', password='password')
 
-        Location.objects.create(position_x=3, position_y=5, description="desc1")
-        Location.objects.create(position_x=6, position_y=7, description="desc2")
+        Location.objects.create(title='title1', longitude=3, latitude=5, description="desc1")
+        Location.objects.create(title='title2', longitude=6, latitude=7, description="desc2")
 
 
 # TODO REPAIR
@@ -40,10 +40,8 @@ class GetSingleLocationUserTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username='user1', password='password')
-        self.loc1 = Location.objects.create(
-            position_x=1, position_y=3, description="desc1")
-        self.loc2 = Location.objects.create(
-            position_x=2, position_y=4, description="desc2")
+        self.loc1 = Location.objects.create(title='title1', longitude=1, latitude=3, description="desc1")
+        self.loc2 = Location.objects.create(title='title2', longitude=2, latitude=4, description="desc2")
 
     def test_get_valid_single_location(self):
         self.client.login(username='user1', password='password')
@@ -65,12 +63,13 @@ class CreateNewLocationUserTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='user1', password='password')
         self.valid_payload = {
-            'position_x': 1,
-            'position_y': 2,
+            'title': 'title1',
+            'longitude': 1,
+            'latitude': 2,
             'description': "plasd"
         }
         self.invalid_payload = {
-            'position_y': 2
+            'latitude': 2
         }
 
     def test_create_valid_location(self):
@@ -97,15 +96,16 @@ class UpdateSingleLocationUserTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username='user1', password='password')
-        self.loc1 = Location.objects.create(position_x=1, position_y=3, description="desc1")
-        self.loc2 = Location.objects.create(position_x=2, position_y=4, description="desc2")
+        self.loc1 = Location.objects.create(title='title1', longitude=1, latitude=3, description="desc1")
+        self.loc2 = Location.objects.create(title='title2', longitude=2, latitude=4, description="desc2")
         self.valid_payload = {
-            'position_x': 1,
-            'position_y': 5,
+            'title': 'title1',
+            'longitude': 1,
+            'latitude': 5,
             'description': "desc"
         }
         self.invalid_payload = {
-            'position_y': 2
+            'latitude': 2
         }
 
     def test_valid_update_location(self):
@@ -131,8 +131,8 @@ class DeleteSingleLocationUserTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username='user1', password='password')
-        self.loc1 = Location.objects.create(position_x=1, position_y=3, description="desc1")
-        self.loc2 = Location.objects.create(position_x=2, position_y=4, description="desc2")
+        self.loc1 = Location.objects.create(title='title1', longitude=1, latitude=3, description="desc1")
+        self.loc2 = Location.objects.create(title='title2', longitude=2, latitude=4, description="desc2")
 
     def test_valid_delete_location(self):
         self.client.login(username='user1', password='password')

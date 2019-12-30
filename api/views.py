@@ -42,8 +42,8 @@ def get_post_locations(request):
     # insert a new record for a locations
     elif request.method == 'POST':
         data = {
-            'position_x': request.data.get('position_x'),
-            'position_y': request.data.get('position_y')
+            'longitude': request.data.get('longitude'),
+            'latitude': request.data.get('latitude')
         }
         serializer = LocationSerializer(data=data)
         if serializer.is_valid():

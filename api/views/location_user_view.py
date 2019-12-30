@@ -18,12 +18,15 @@ class LocationUserList(generics.ListAPIView):
         user = self.request.user
         queryset = Location.objects.filter(user=user)
 
-        position_x = self.request.query_params.get('position_x', None)
-        if position_x is not None:
-            queryset = queryset.filter(position_x=position_x)
-        position_y = self.request.query_params.get('position_y', None)
-        if position_y is not None:
-            queryset = queryset.filter(position_x=position_y)
+        title = self.request.query_params.get('title', None)
+        if title is not None:
+            queryset = queryset.filter(title=title)
+        longitude = self.request.query_params.get('longitude', None)
+        if longitude is not None:
+            queryset = queryset.filter(longitude=longitude)
+        latitude = self.request.query_params.get('latitude', None)
+        if latitude is not None:
+            queryset = queryset.filter(longitude=latitude)
         description = self.request.query_params.get('description', None)
         if description is not None:
             queryset = queryset.filter(description=description)
@@ -33,10 +36,6 @@ class LocationUserList(generics.ListAPIView):
     def post(self, request, format=None):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
-            user = Location.objects.create(position_x=serializer.data['position_x'],
-                                           position_y=serializer.data['position_y'],
-                                           description=serializer.data['description'],
-                                           user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
