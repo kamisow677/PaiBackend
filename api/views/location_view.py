@@ -8,7 +8,7 @@ from rest_framework import status
 from ..models import Location
 from ..serializers import LocationSerializer
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import Http404, JsonResponse, HttpResponse
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -18,7 +18,7 @@ class LocationList(APIView):
     def get(self, request, format=None):
         locations = Location.objects.all()
         serializer = LocationSerializer(locations, many=True)
-        return Response(serializer.data)
+        return JsonResponse(list(serializer.data), safe=False)
 
     def post(self, request, format=None):
         serializer = LocationSerializer(data=request.data)
@@ -30,8 +30,8 @@ class LocationList(APIView):
                 description=serializer.data['description'],
                 user=request.user
             )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
 
 class LocationDetail(APIView):
@@ -46,20 +46,20 @@ class LocationDetail(APIView):
     def get(self, request, pk, format=None):
         location = self.get_object(pk)
         serializer = LocationSerializer(location)
-        return Response(serializer.data)
+        return JsonResponse(serializer.data)
 
     def put(self, request, pk, format=None):
         location = self.get_object(pk)
         serializer = LocationSerializer(location, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         location = self.get_object(pk)
         location.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
 # @api_view(['GET', 'DELETE', 'PUT'])
 # def get_delete_update_locations(request, pk):
