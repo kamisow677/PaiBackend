@@ -3,10 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status, generics
+from rest_framework.utils import json
+
 from ..models import Location
 from ..serializers import LocationSerializer
+from django.core import serializers
+
 from rest_framework.views import APIView
-from django.http import Http404
+from django.http import Http404, JsonResponse, HttpResponse
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -31,14 +35,18 @@ class LocationUserList(generics.ListAPIView):
         if description is not None:
             queryset = queryset.filter(description=description)
 
-        return queryset
+        return queryset;
+
+    def get(self, request, *args, **kwargs):
+        serializer = LocationSerializer(self.get_queryset(), many=True)
+        return JsonResponse(list(serializer.data), safe=False)
 
     def post(self, request, format=None):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
 
 class LocationUserDetailList(generics.GenericAPIView):
@@ -54,17 +62,17 @@ class LocationUserDetailList(generics.GenericAPIView):
     def get(self, request, pk, format=None):
         location = self.get_object(pk)
         serializer = self.get_serializer(location)
-        return Response(serializer.data)
+        return JsonResponse(serializer.data)
 
     def patch(self, request, pk, format=None):
         location = self.get_object(pk)
         serializer = self.get_serializer(location, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         location = self.get_object(pk)
         location.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
