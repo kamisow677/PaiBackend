@@ -1,9 +1,11 @@
 import json
+from json import loads
 
 from django.contrib.auth.models import User
-from rest_framework import status
 from django.test import TestCase, Client
 from django.urls import reverse
+from rest_framework import status
+
 from ..models import Location
 from ..serializers import LocationSerializer
 
@@ -14,41 +16,43 @@ client = Client()
 class PaiTestCase(TestCase):
 
     def setUp(self):
-        self.loc1 = Location.objects.create(title='title1', longitude=1.1, latitude=0.0, description="desc1")
-        self.loc2 = Location.objects.create(title='title2', longitude=2.2, latitude=3.3, description="desc2")
-        self.user = User.objects.create_user(username='user1', password='password')
+        self.user1 = User.objects.create_user(username='user1', password='password')
+        self.user2 = User.objects.create_user(username='user2', password='password')
+        self.loc1 = Location.objects.create(title='title1', longitude=1.1, latitude=0.0, description="desc1",
+                                            user=self.user1)
+        self.loc2 = Location.objects.create(title='title2', longitude=2.2, latitude=3.3, description="desc2",
+                                            user=self.user1)
+        self.loc3 = Location.objects.create(title='title', longitude=4.4, latitude=5.5, description="desc",
+                                            user=self.user2)
+        self.loc4 = Location.objects.create(title='title', longitude=4.4, latitude=5.5, description="desc")
         self.client.login(username='user1', password='password')
 
 
-# class GetAllLocationsUserTest(TestCase):
-#
-#     def setUp(self):
-#         self.user = User.objects.create_user(username='user1', password='password')
-#         self.client.login(username='user1', password='password')
-#
-#         Location.objects.create(title='title1', longitude=3, latitude=5, description="desc1")
-#         Location.objects.create(title='title2', longitude=6, latitude=7, description="desc2")
+class GetAllLocationsUserTest(PaiTestCase):
 
+    def test_get_all_locations(self):
+        locations = Location.objects.filter(user=self.user1.pk)
+        serializer = LocationSerializer(locations, many=True)
+        expected = serializer.data
 
-# TODO REPAIR
-# def test_get_all_locations(self):
-#     # get API response
-#     self.client.login(username='user1', password='password')
-#     response = self.client.get(reverse('user_locations_bezpk'))
-#     # get data from db
-#     locations = Location.objects.all()
-#     serializer = LocationSerializer(locations, many=True)
-#
-#     self.assertEqual(response.data, serializer.data)
-#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('user_locations_bezpk'))
+        actual = loads(response.content)
+
+        self.assertEqual(expected, actual)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class GetSingleLocationUserTest(PaiTestCase):
 
     def test_get_valid_single_location(self):
-        response = self.client.get(reverse('user_locations_zpk', kwargs={'pk': self.loc1.pk}))
         location = Location.objects.get(pk=self.loc1.pk)
         serializer = LocationSerializer(location)
-        self.assertEqual(response.data, serializer.data)
+        expected = serializer.data
+
+        response = self.client.get(reverse('user_locations_zpk', kwargs={'pk': self.loc1.pk}))
+        actual = loads(response.content)
+
+        self.assertEqual(expected, actual)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_invalid_single_location(self):
@@ -85,6 +89,11 @@ class CreateNewLocationUserTest(TestCase):
             data=json.dumps(valid_payload),
             content_type='application/json'
         )
+        actual = loads(response.content)
+        self.assertEqual(valid_payload["title"], actual["title"])
+        self.assertEqual(valid_payload["longitude"], actual["longitude"])
+        self.assertEqual(valid_payload["latitude"], actual["latitude"])
+        self.assertEqual(valid_payload["description"], actual["description"])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_invalid_location(self):
@@ -173,24 +182,32 @@ class UpdateSingleLocationUserTest(PaiTestCase):
             'latitude': 22.22,
             'description': ""
         }
-        title = {
+        partial_update_1 = {
             'title': 'abc'
         }
-        longitude = {
+        partial_update_2 = {
+            'description': "abc",
             'longitude': 11.11
         }
-        latitude = {
-            'longitude': 11.11
-        }
-        description = {
-            'description': "abc"
-        }
-        self.helper_valid_update_location(valid_payload)
-        self.helper_valid_update_location(empty_description)
-        self.helper_valid_update_location(longitude)
-        self.helper_valid_update_location(title)
-        self.helper_valid_update_location(description)
-        self.helper_valid_update_location(latitude)
+        response = self.helper_valid_update_location(valid_payload)
+        actual = loads(response.content)
+        self.assertEqual(valid_payload["title"], actual["title"])
+        self.assertEqual(valid_payload["longitude"], actual["longitude"])
+        self.assertEqual(valid_payload["latitude"], actual["latitude"])
+        self.assertEqual(valid_payload["description"], actual["description"])
+
+        response = self.helper_valid_update_location(empty_description)
+        actual = loads(response.content)
+        self.assertEqual(empty_description["description"], actual["description"])
+
+        response = self.helper_valid_update_location(partial_update_1)
+        actual = loads(response.content)
+        self.assertEqual(partial_update_1["title"], actual["title"])
+
+        response = self.helper_valid_update_location(partial_update_2)
+        actual = loads(response.content)
+        self.assertEqual(partial_update_2["description"], actual["description"])
+        self.assertEqual(partial_update_2["longitude"], actual["longitude"])
 
     def helper_valid_update_location(self, valid_payload):
         response = self.client.patch(
@@ -199,6 +216,7 @@ class UpdateSingleLocationUserTest(PaiTestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response
 
     def test_invalid_update_location(self):
         blank_title = {
@@ -249,7 +267,8 @@ class DeleteSingleLocationUserTest(PaiTestCase):
 
     def test_valid_delete_location(self):
         response = self.client.delete(reverse('user_locations_zpk', kwargs={'pk': self.loc2.pk}))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertRaises(Location.DoesNotExist, Location.objects.get, id=self.loc2.pk)
 
     def test_invalid_delete_location(self):
         response = self.client.delete(reverse('user_locations_zpk', kwargs={'pk': 30}))

@@ -1,8 +1,7 @@
-from django.contrib.auth import authenticate
-from rest_framework import serializers
-from .models import Location
-from rest_framework import authentication
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from .models import Location
 
 
 # class UserProfileSerializer(serializers.Serializer):

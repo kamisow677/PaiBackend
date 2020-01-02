@@ -1,24 +1,17 @@
 # Create your views here.
-from rest_framework.decorators import api_view
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
+from django.http import Http404, JsonResponse, HttpResponse
 from rest_framework import status, generics
-from rest_framework.utils import json
+from rest_framework.permissions import IsAuthenticated
 
 from ..models import Location
 from ..serializers import LocationSerializer
-from django.core import serializers
-
-from rest_framework.views import APIView
-from django.http import Http404, JsonResponse, HttpResponse
-from rest_framework.permissions import IsAuthenticated
 
 
 class LocationUserList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         user = self.request.user
         queryset = Location.objects.filter(user=user)
 
@@ -35,10 +28,7 @@ class LocationUserList(generics.ListAPIView):
         if description is not None:
             queryset = queryset.filter(description=description)
 
-        return queryset;
-
-    def get(self, request, *args, **kwargs):
-        serializer = LocationSerializer(self.get_queryset(), many=True)
+        serializer = LocationSerializer(queryset, many=True)
         return JsonResponse(list(serializer.data), safe=False)
 
     def post(self, request, format=None):

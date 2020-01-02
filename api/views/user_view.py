@@ -1,13 +1,8 @@
 from django.contrib.auth import login, authenticate, logout
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import HttpResponse
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import authentication, status
-from django.contrib.auth.models import User
-from rest_framework import authentication
-from rest_framework import exceptions
-from ..serializers import UserProfileSerializer
+from rest_framework.views import APIView
 
 
 class LoginView(APIView):
