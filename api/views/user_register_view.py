@@ -1,4 +1,3 @@
-# Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -15,12 +14,8 @@ class LocationUserRegister(generics.GenericAPIView):
     serializer_class = UserProfileSerializer
 
     def post(self, request, format=None):
-        serializer = UserProfileSerializer(data=request.data)
-        data = request.data
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            user = User.objects.create_user(data['username'], data['email'], data['password'])
-            user.last_name = data['last_name']
-            user.first_name = data['first_name']
-            user.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)

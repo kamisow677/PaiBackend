@@ -34,15 +34,9 @@ class LocationUserList(generics.ListAPIView):
         return queryset
 
     def post(self, request, format=None):
-        serializer = LocationSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            Location.objects.create(
-                title=serializer.data['title'],
-                longitude=serializer.data['longitude'],
-                latitude=serializer.data['latitude'],
-                description=serializer.data['description'],
-                user=request.user
-            )
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,12 +53,12 @@ class LocationUserDetailList(generics.GenericAPIView):
 
     def get(self, request, pk, format=None):
         location = self.get_object(pk)
-        serializer = LocationSerializer(location)
+        serializer = self.get_serializer(location)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         location = self.get_object(pk)
-        serializer = LocationSerializer(location, data=request.data)
+        serializer = self.get_serializer(location, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

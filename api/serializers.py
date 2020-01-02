@@ -22,3 +22,8 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'title', 'longitude', 'latitude', 'description')
+        extra_kwargs = {'description': {'required': True}}
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super(LocationSerializer, self).create(validated_data)
