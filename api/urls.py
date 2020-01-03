@@ -5,7 +5,6 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 from api.views.location_user_view import LocationUserList, LocationUserDetailList
-from api.views.location_view import LocationList, LocationDetail
 from api.views.user_register_view import LocationUserRegister
 from api.views.user_view import LoginView, LogoutView
 
@@ -19,8 +18,6 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('locations/', LocationList.as_view(), name="locations_bezpk"),
-    path('locations/<int:pk>/', LocationDetail.as_view(), name="locations_zpk"),
     path('user/locations/', LocationUserList.as_view(), name="user_locations_bezpk"),
     path('user/locations/<int:pk>/', LocationUserDetailList.as_view(), name="user_locations_zpk"),
     path('user/register', LocationUserRegister.as_view(), name="register"),
