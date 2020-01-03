@@ -1,6 +1,6 @@
-# Create your views here.
 from django.http import Http404, JsonResponse, HttpResponse
 from rest_framework import status, generics
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import Location
@@ -10,6 +10,7 @@ from ..serializers import LocationSerializer
 class LocationUserList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
+    parser_classes = (MultiPartParser, JSONParser,)
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -36,12 +37,13 @@ class LocationUserList(generics.ListAPIView):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LocationUserDetailList(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
+    parser_classes = (MultiPartParser, JSONParser,)
 
     def get_object(self, pk):
         try:

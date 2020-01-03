@@ -1,13 +1,13 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
-# Create your models here.
 class Location(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     longitude = models.FloatField()
     latitude = models.FloatField()
+    photo = models.ImageField(default='default.jpg', upload_to='location_photos')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __repr__(self):

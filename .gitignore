@@ -1,3 +1,5 @@
 .idea/
 venv/
-*__pycache__/
+__pycache__/
+profile_pics/
+db.sqlite3

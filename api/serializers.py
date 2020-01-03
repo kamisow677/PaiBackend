@@ -4,13 +4,6 @@ from rest_framework import serializers
 from .models import Location
 
 
-# class UserProfileSerializer(serializers.Serializer):
-#     id = serializers.IntegerField(read_only=True)
-#     username = serializers.CharField(max_length=200, read_only=True)
-#     email = serializers.EmailField(max_length=400, read_only=True)
-#     first_name = serializers.CharField(max_length=200, read_only=True)
-#     last_name = serializers.CharField(max_length=200, read_only=True)
-
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -20,7 +13,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ('id', 'title', 'longitude', 'latitude', 'description')
+        fields = ('id', 'title', 'longitude', 'latitude', 'description', 'photo')
         extra_kwargs = {'description': {'required': True}}
 
     def create(self, validated_data):
