@@ -3,7 +3,6 @@ from ..models import Location
 
 
 class LocationTest(TestCase):
-    """ Test module for Puppy model """
 
     def setUp(self):
         Location.objects.create(

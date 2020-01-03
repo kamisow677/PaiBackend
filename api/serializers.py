@@ -1,8 +1,7 @@
-from django.contrib.auth import authenticate
-from rest_framework import serializers
-from .models import Location
-from rest_framework import authentication
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from .models import Location
 
 
 # class UserProfileSerializer(serializers.Serializer):
@@ -22,3 +21,8 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'title', 'longitude', 'latitude', 'description')
+        extra_kwargs = {'description': {'required': True}}
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super(LocationSerializer, self).create(validated_data)
