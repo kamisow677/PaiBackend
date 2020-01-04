@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import Location
+from .models import Location, Photo
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -10,10 +10,22 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'password')
 
 
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ('id', 'location', 'file',)
+
+
+class PhotoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ('id', 'file',)
+
+
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ('id', 'title', 'longitude', 'latitude', 'description', 'photo')
+        fields = ('id', 'title', 'longitude', 'latitude', 'description')
         extra_kwargs = {'description': {'required': True}}
 
     def create(self, validated_data):

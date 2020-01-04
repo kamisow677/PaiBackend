@@ -7,8 +7,12 @@ class Location(models.Model):
     description = models.TextField(blank=True)
     longitude = models.FloatField()
     latitude = models.FloatField()
-    photo = models.ImageField(default='default.jpg', upload_to='location_photos')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __repr__(self):
         return f'title: {self.title}, longitude: {str(self.longitude)}, latitude: {str(self.latitude)}, description: {self.description}'
+
+
+class Photo(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='photos')
+    file = models.ImageField(upload_to='location_photos')

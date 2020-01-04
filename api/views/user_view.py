@@ -1,7 +1,7 @@
 from django.contrib.auth import login, authenticate, logout
-from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
@@ -13,9 +13,9 @@ class LoginView(APIView):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponse(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
         else:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class LogoutView(APIView):
@@ -24,6 +24,6 @@ class LogoutView(APIView):
     def post(self, request, format=None):
         if request.user is not None:
             logout(request)
-            return HttpResponse(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
         else:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)

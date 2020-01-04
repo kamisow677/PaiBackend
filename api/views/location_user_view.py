@@ -1,18 +1,16 @@
-from django.http import Http404, JsonResponse, HttpResponse
-from rest_framework import status, generics
-from rest_framework.parsers import MultiPartParser, JSONParser
+from django.http import Http404
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import Location
 from ..serializers import LocationSerializer
 
 
-class LocationUserList(generics.ListAPIView):
+class LocationUserList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
-    parser_classes = (MultiPartParser, JSONParser,)
 
-    def get(self, request, *args, **kwargs):
+    def get_queryset(self):
         user = self.request.user
         queryset = Location.objects.filter(user=user)
 
@@ -29,42 +27,18 @@ class LocationUserList(generics.ListAPIView):
         if description is not None:
             queryset = queryset.filter(description=description)
 
-        serializer = LocationSerializer(queryset, many=True)
-        return JsonResponse(list(serializer.data), safe=False)
-
-    def post(self, request, format=None):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        return HttpResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return queryset
 
 
-class LocationUserDetailList(generics.GenericAPIView):
+class LocationUserDetailList(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
-    parser_classes = (MultiPartParser, JSONParser,)
+    lookup_url_kwarg = "pk"
 
-    def get_object(self, pk):
+    def get_object(self):
+        loc_id = self.kwargs.get(self.lookup_url_kwarg)
+        user = self.request.user
         try:
-            return Location.objects.get(pk=pk)
+            return Location.objects.get(user=user, id=loc_id)
         except Location.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
-        location = self.get_object(pk)
-        serializer = self.get_serializer(location)
-        return JsonResponse(serializer.data)
-
-    def patch(self, request, pk, format=None):
-        location = self.get_object(pk)
-        serializer = self.get_serializer(location, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        location = self.get_object(pk)
-        location.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
