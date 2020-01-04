@@ -1,6 +1,6 @@
 from django.http import Http404
 from rest_framework import generics
-from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import Photo, Location
@@ -10,10 +10,9 @@ from ..serializers import PhotoSerializer, PhotoListSerializer
 class ListPhotoView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PhotoListSerializer
-    lookup_url_kwarg = "pk"
 
     def get_location(self):
-        loc_id = self.kwargs.get(self.lookup_url_kwarg)
+        loc_id = self.kwargs.get(self.lookup_field)
         user = self.request.user
         try:
             return Location.objects.get(user=user, id=loc_id)
@@ -35,10 +34,9 @@ class CreatePhotoView(generics.CreateAPIView):
 class RetrieveDestroyPhotoView(generics.RetrieveDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PhotoSerializer
-    lookup_url_kwarg = "pk"
 
     def get_object(self):
-        photo_id = self.kwargs.get(self.lookup_url_kwarg)
+        photo_id = self.kwargs.get(self.lookup_field)
         user = self.request.user
         try:
             photo = Photo.objects.get(id=photo_id)

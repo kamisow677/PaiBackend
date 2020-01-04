@@ -31,6 +31,7 @@ class PaiTestCase(TestCase):
 class GetAllLocationsUserTest(PaiTestCase):
 
     def test_get_all_locations(self):
+        print(self.user1.id)
         locations = Location.objects.filter(user=self.user1.pk)
         serializer = LocationSerializer(locations, many=True)
         expected = serializer.data

@@ -15,8 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         # Hash the user's password.
         user.set_password(validated_data['password'])
-        user.save()
-        return user
+        validated_data['password'] = user.password
+        return super(UserSerializer, self).create(validated_data)
 
     def update(self, instance, validated_data):
         if 'password' in validated_data:

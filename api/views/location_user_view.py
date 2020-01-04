@@ -33,10 +33,9 @@ class ListCreateLocationView(generics.ListCreateAPIView):
 class RetrieveUpdateDestroyLocationView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
-    lookup_url_kwarg = "pk"
 
     def get_object(self):
-        loc_id = self.kwargs.get(self.lookup_url_kwarg)
+        loc_id = self.kwargs.get(self.lookup_field)
         user = self.request.user
         try:
             return Location.objects.get(user=user, id=loc_id)

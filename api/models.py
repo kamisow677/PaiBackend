@@ -7,7 +7,7 @@ class Location(models.Model):
     description = models.TextField(blank=True)
     longitude = models.FloatField()
     latitude = models.FloatField()
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __repr__(self):
         return f'title: {self.title}, longitude: {str(self.longitude)}, latitude: {str(self.latitude)}, description: {self.description}'

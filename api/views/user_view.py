@@ -15,12 +15,14 @@ class RegisterUserView(generics.CreateAPIView):
 class RetrieveUpdateDestroyUserView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
-    
+
     def get_object(self):
         return self.request.user
 
 
 class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request, format=None):
         data = request.data
         username = data.get('username', None)
