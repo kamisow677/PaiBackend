@@ -1,8 +1,23 @@
 from django.contrib.auth import login, authenticate, logout
+from rest_framework import generics, permissions
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from ..serializers import UserSerializer
+
+
+class RegisterUserView(generics.CreateAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = UserSerializer
+
+
+class RetrieveUpdateDestroyUserView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+    
+    def get_object(self):
+        return self.request.user
 
 
 class LoginView(APIView):
@@ -19,7 +34,7 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, format=None):
         if request.user is not None:
