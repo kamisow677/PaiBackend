@@ -32,10 +32,9 @@ class CreatePhotoView(generics.CreateAPIView):
     serializer_class = PhotoSerializer
 
 
-class PhotoView(generics.RetrieveDestroyAPIView):
+class RetrieveDestroyPhotoView(generics.RetrieveDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PhotoSerializer
-    parser_classes = (MultiPartParser, JSONParser,)
     lookup_url_kwarg = "pk"
 
     def get_object(self):

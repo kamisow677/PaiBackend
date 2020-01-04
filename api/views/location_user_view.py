@@ -6,7 +6,7 @@ from ..models import Location
 from ..serializers import LocationSerializer
 
 
-class LocationUserList(generics.ListCreateAPIView):
+class ListCreateLocationView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
 
@@ -30,7 +30,7 @@ class LocationUserList(generics.ListCreateAPIView):
         return queryset
 
 
-class LocationUserDetailList(generics.RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateDestroyLocationView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LocationSerializer
     lookup_url_kwarg = "pk"
