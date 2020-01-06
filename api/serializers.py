@@ -6,15 +6,14 @@ from .models import Location, Photo
 
 
 class UserPasswordChangeSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True, max_length=128)
     password = serializers.CharField(required=True, max_length=128)
+    new_password = serializers.CharField(required=True, max_length=128)
 
     def validate(self, data):
         # validate_password(value)
         # add here additional check for password strength if needed
-        if not self.context['request'].user.check_password(data.get('old_password')):
-            raise serializers.ValidationError({'old_password': 'Wrong password.'})
-
+        if not self.context['request'].user.check_password(data.get('password')):
+            raise serializers.ValidationError({'password': 'Wrong password.'})
         return data
 
     def update(self, instance, validated_data):
@@ -32,6 +31,21 @@ class UserPasswordChangeSerializer(serializers.Serializer):
         return {'Success': True}
 
 
+class UserDestroySerializer(serializers.Serializer):
+    password = serializers.CharField(required=True, max_length=128)
+
+    def validate(self, data):
+        if not self.context['request'].user.check_password(data.get('password')):
+            raise serializers.ValidationError({'password': 'Wrong password.'})
+        return data
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -46,7 +60,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return super(UserRegisterSerializer, self).create(validated_data)
 
 
-class UserRetreiveUpdateSerializer(serializers.ModelSerializer):
+class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')

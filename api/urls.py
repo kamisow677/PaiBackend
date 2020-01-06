@@ -6,7 +6,8 @@ from rest_framework import permissions
 
 from api.views.location_user_view import ListCreateLocationView, RetrieveUpdateDestroyLocationView
 from api.views.photo_view import RetrieveDestroyPhotoView, ListPhotoView, CreatePhotoView
-from api.views.user_view import LoginView, LogoutView, RegisterUserView, PasswordChangeUserView, RetrieveUpdateUserView
+from api.views.user_view import LoginView, LogoutView, RegisterUserView, PasswordChangeUserView, RetrieveUpdateUserView, \
+    DestroyUserView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -18,14 +19,15 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('user/locations/', ListCreateLocationView.as_view(), name="user_locations_bezpk"),
-    path('user/locations/<int:pk>/', RetrieveUpdateDestroyLocationView.as_view(), name="user_locations_zpk"),
-    path('user/locations/<int:pk>/photos/', ListPhotoView.as_view(), name="photos_list"),
-    path('photos/', CreatePhotoView.as_view(), name="photos_c"),
-    path('photos/<int:pk>/', RetrieveDestroyPhotoView.as_view(), name="photos_rd"),
+    path('locations/', ListCreateLocationView.as_view(), name="user_locations_bezpk"),
+    path('locations/<int:pk>/', RetrieveUpdateDestroyLocationView.as_view(), name="user_locations_zpk"),
+    path('locations/<int:pk>/photos/', ListPhotoView.as_view(), name="photos-list"),
+    path('photos/', CreatePhotoView.as_view(), name="photos-c"),
+    path('photos/<int:pk>/', RetrieveDestroyPhotoView.as_view(), name="photos-rd"),
     path('user/register/', RegisterUserView.as_view(), name="register"),
-    path('user/', RetrieveUpdateUserView.as_view(), name="users_ru"),
-    path('change-password/', PasswordChangeUserView.as_view(), name="change-password"),
+    path('user/', RetrieveUpdateUserView.as_view(), name="user-ru"),
+    path('user/change-password/', PasswordChangeUserView.as_view(), name="change-password"),
+    path('user/delete-account/', DestroyUserView.as_view(), name="delete-account"),
     path('login/', LoginView.as_view(), name="login"),
     path('logout/', LogoutView.as_view(), name="logout"),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
