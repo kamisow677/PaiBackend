@@ -6,7 +6,7 @@ from rest_framework import permissions
 
 from api.views.location_user_view import ListCreateLocationView, RetrieveUpdateDestroyLocationView
 from api.views.photo_view import RetrieveDestroyPhotoView, ListPhotoView, CreatePhotoView
-from api.views.user_view import LoginView, LogoutView, RegisterUserView, RetrieveUpdateDestroyUserView
+from api.views.user_view import LoginView, LogoutView, RegisterUserView, PasswordChangeUserView, RetrieveUpdateUserView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -24,7 +24,8 @@ urlpatterns = [
     path('photos/', CreatePhotoView.as_view(), name="photos_c"),
     path('photos/<int:pk>/', RetrieveDestroyPhotoView.as_view(), name="photos_rd"),
     path('user/register/', RegisterUserView.as_view(), name="register"),
-    path('user/', RetrieveUpdateDestroyUserView.as_view(), name="users_rud"),
+    path('user/', RetrieveUpdateUserView.as_view(), name="users_ru"),
+    path('change-password/', PasswordChangeUserView.as_view(), name="change-password"),
     path('login/', LoginView.as_view(), name="login"),
     path('logout/', LogoutView.as_view(), name="logout"),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

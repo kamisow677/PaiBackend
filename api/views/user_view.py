@@ -4,19 +4,27 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import UserSerializer
+from ..serializers import UserRegisterSerializer, UserPasswordChangeSerializer, UserRetreiveUpdateSerializer
 
 
 class RegisterUserView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
-    serializer_class = UserSerializer
+    serializer_class = UserRegisterSerializer
 
 
-class RetrieveUpdateDestroyUserView(generics.RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateUserView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UserSerializer
+    serializer_class = UserRetreiveUpdateSerializer
 
-    def get_object(self):
+    def get_object(self, queryset=None):
+        return self.request.user
+
+
+class PasswordChangeUserView(generics.UpdateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserPasswordChangeSerializer
+
+    def get_object(self, queryset=None):
         return self.request.user
 
 
