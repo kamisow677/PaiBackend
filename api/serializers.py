@@ -17,7 +17,7 @@ class UserPasswordChangeSerializer(serializers.Serializer):
         return data
 
     def update(self, instance, validated_data):
-        instance.set_password(validated_data['password'])
+        instance.set_password(validated_data['new_password'])
         # make sure the user stays logged in
         update_session_auth_hash(self.context['request'], self.context['request'].user)
         instance.save()
